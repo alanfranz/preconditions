@@ -2,6 +2,15 @@ require 'condition_checker'
 
 module Preconditions
 
+  class NullArgumentError < ArgumentError
+  end
+
+  class InvalidArgumentError < ArgumentError
+  end
+
+  class InvalidBlockError < ArgumentError
+  end
+
   module PreconditionMixinMethods
 
     # Check that arg is not nil, raising an ArgumentError with an optional
@@ -12,7 +21,7 @@ module Preconditions
     # @raise [ArgumentError] if the arg is nil
     def check_not_nil(arg, msg = nil, *fmt)
       if arg.nil?
-        raise_exception(ArgumentError, msg, *fmt)
+        raise_exception(NullArgumentError, msg, *fmt)
       end
       arg
     end
@@ -25,7 +34,7 @@ module Preconditions
     # @raise [ArgumentError] if exp is false
     def check_argument(exp, msg = nil, *fmt)
       if !exp
-        raise_exception(ArgumentError, msg, *fmt)
+        raise_exception(InvalidArgumentError, msg, *fmt)
       end
       exp
     end
@@ -39,7 +48,7 @@ module Preconditions
     def check_block(msg = nil, *fmt, &block)
       res = yield
       if !res
-        raise_exception(ArgumentError, msg, *fmt)
+        raise_exception(InvalidBlockError, msg, *fmt)
       end
       res
     end
